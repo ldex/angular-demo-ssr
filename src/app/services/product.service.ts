@@ -6,7 +6,7 @@ import { Product } from '../models/product.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
-  private baseUrl: string = environment.apiUrl;
+  private baseUrl: string = `${environment.apiUrl}/products`;
   private http: HttpClient = inject(HttpClient);
   products$!: Observable<Product[]>;
 
@@ -15,10 +15,11 @@ export class ProductService {
   }
 
   deleteProduct(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}${id}`);
+    return this.http.delete(`${this.baseUrl}/${id}`);
   }
 
   insertProduct(newProduct: Product): Observable<Product> {
+    newProduct.modifiedDate = new Date();
     return this.http.post<Product>(this.baseUrl, newProduct);
   }
 
@@ -30,11 +31,16 @@ export class ProductService {
   }
 
   initProducts() {
-    let url: string = this.baseUrl + `?$orderby=ModifiedDate%20desc`;
+    const params = {
+      _sort: 'modifiedDate',
+      _order: 'desc',
+    };
 
-    this.products$ = this.http
-      .get<Product[]>(url)
-      .pipe(delay(2000), shareReplay());
+    const options = {
+      params: params
+    };
+
+    this.products$ = this.http.get<Product[]>(this.baseUrl, options).pipe(delay(800), shareReplay());
   }
 
   clearCache() {
