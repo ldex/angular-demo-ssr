@@ -1,9 +1,8 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
-  name: 'orderBy',
-  pure: false,
-  standalone: true
+    name: 'orderBy', pure: false,
+    standalone: true
 })
 export class OrderBy implements PipeTransform {
 

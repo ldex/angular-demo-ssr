@@ -1,4 +1,4 @@
-import { Component, Signal, inject, computed } from '@angular/core'
+import { Component, Signal, inject, computed, signal } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { Router, RouterModule } from '@angular/router'
 import { toSignal } from '@angular/core/rxjs-interop'
@@ -24,7 +24,7 @@ export class ProductListComponent {
   hasProducts: Signal<boolean> = computed(() => this.productsNumber() > 0)
 
   selectedProduct!: Product
-  sorter = "-modifiedDate"
+  sorter = signal("-price")
   errorMessage!: string
 
   pageSize: number = 5
@@ -51,8 +51,8 @@ export class ProductListComponent {
   }
 
   sortList(propertyName: string): void {
-      this.sorter = this.sorter.startsWith("-") ? propertyName : "-" + propertyName
-      this.firstPage()
+    this.sorter.set(this.sorter().startsWith("-") ? propertyName : "-" + propertyName);
+    this.firstPage();
   }
 
   onSelect(product: Product): void {
